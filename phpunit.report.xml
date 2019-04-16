@@ -1,0 +1,5 @@
+<testsuites>
+    <testsuite name="Basic Spreadsheet Utils Tests">
+        <directory>tests/nabu/spsutils</directory>
+    </testsuite>
+</testsuites>
