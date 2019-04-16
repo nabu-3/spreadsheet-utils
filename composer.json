@@ -1,0 +1,44 @@
+{
+    "type": "library",
+    "name": "nabu-3/spreadsheet-utils",
+    "description": "nabu-3 Utilities to manage Spreadsheets based on library phpoffice/phpspreadsheet ",
+    "keywords": [ "nabu-3", "nabu", "spreadsheet", "datasheet", "msoffice", "microsoft", "excel", "ms-excel", "MSExcel" ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/nabu-3/spreadsheet-utils"
+        }
+    ],
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Rafael Gutierrez",
+            "email": "rgutierrez@nabu-3.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/nabu-3/spreadsheet-utils/issues",
+        "email": "contact@nabu-3.com",
+        "source": "https://github.com/nabu-3/spreadsheet-utils"
+    },
+    "require": {
+        "php": ">=7.2",
+        "ext-mbstring": ">=7.2",
+        "nabu-3/minimal-class": "dev-Version-3.0.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    }
+}
