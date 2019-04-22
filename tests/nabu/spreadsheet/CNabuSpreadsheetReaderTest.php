@@ -21,16 +21,23 @@
 
 namespace nabu\spreadsheet;
 
-use nabu\min\CNabuObject;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Class to read a Spreadsheet in MS(R) Office Excel format and convert to @see { TNabuSpreadsheetData } object.
+ * Tests for class @see { TNabuSpreadsheetData }.
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @since 0.0.1
  * @version 0.0.1
  * @package \nabu\spreadsheet
  */
-class CNabuSpreadsheetReader extends CNabuObject
+class CNabuSpreadsheetReaderTest extends TestCase
 {
-
+    /**
+     * @test __construct
+     */
+    public function testConstruct()
+    {
+        $reader = new CNabuSpreadsheetReader();
+        $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+    }
 }
