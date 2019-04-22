@@ -21,7 +21,5 @@ install:
     - travis_retry composer install
 
 script:
-    - composer require sebastian/global-state
-    - composer require phpunit/php-invoker
     - ./vendor/bin/phpunit
     - sonar-scanner
