@@ -23,6 +23,8 @@ namespace nabu\spreadsheet;
 
 use PHPUnit\Framework\TestCase;
 
+use nabu\spreadsheet\exceptions\ENabuSpreadsheetUtilsException;
+
 /**
  * Tests for class @see { TNabuSpreadsheetData }.
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
@@ -39,5 +41,29 @@ class CNabuSpreadsheetReaderTest extends TestCase
     {
         $reader = new CNabuSpreadsheetReader();
         $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+
+        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
+        $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+
+        $this->expectException(ENabuSpreadsheetUtilsException::class);
+        $this->expectExceptionCode(ENabuSpreadsheetUtilsException::ERROR_INVALID_FILE_NAME_OR_PATH);
+        $this->expectExceptionMessage('resources/not-exists.xlsx');
+        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/not-exists.xlsx');
+    }
+
+    /**
+     * @test extractColumns
+     */
+    public function testExtractColumns()
+    {
+        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
+        $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+
+        $data = $reader->extractColumns(array(
+            'column 1' => 'column_1',
+            'column 2' => 'column_2',
+            'column 3' => 'column_3',
+            true
+        ));
     }
 }
