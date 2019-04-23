@@ -38,13 +38,17 @@ class ENabuSpreadsheetUtilsException extends ENabuException
     public const ERROR_INVALID_FILE_NAME_OR_PATH                    = 0x0001;
     /** @var int None Spreadsheet is loaded. */
     public const ERROR_NONE_SPREADSHEET_LOADED                      = 0x0002;
+    /** @var int Mandatory column(s) not present. Requires missed columns list. */
+    public const ERROR_MANDATORY_COLUMNS_NOT_PRESENT                = 0x0003;
 
     /** @var array English error messages array. */
     private static $error_messages = array(
         ENabuSpreadsheetUtilsException::ERROR_INVALID_FILE_NAME_OR_PATH =>
             'Invalid name, file or path [%s].',
         ENabuSpreadsheetUtilsException::ERROR_NONE_SPREADSHEET_LOADED =>
-            'None Spreadsheet is loaded.'
+            'None Spreadsheet is loaded.',
+        ENabuSpreadsheetUtilsException::ERROR_MANDATORY_COLUMNS_NOT_PRESENT =>
+            'Mandatory column(s) not present in datasheet [%s].'
     );
 
     /**
