@@ -21,5 +21,6 @@ install:
     - travis_retry composer install
 
 script:
+    - git fetch --unshallow
     - ./vendor/bin/phpunit
     - sonar-scanner

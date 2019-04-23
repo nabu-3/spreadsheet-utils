@@ -23,11 +23,13 @@ namespace nabu\spreadsheet;
 
 use PHPUnit\Framework\TestCase;
 
+use nabu\spreadsheet\exceptions\ENabuSpreadsheetUtilsException;
+
 /**
  * Tests for class @see { TNabuSpreadsheetData }.
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  * @package \nabu\spreadsheet
  */
 class CNabuSpreadsheetReaderTest extends TestCase
@@ -39,5 +41,38 @@ class CNabuSpreadsheetReaderTest extends TestCase
     {
         $reader = new CNabuSpreadsheetReader();
         $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+
+        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
+        $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+
+        $this->expectException(ENabuSpreadsheetUtilsException::class);
+        $this->expectExceptionCode(ENabuSpreadsheetUtilsException::ERROR_INVALID_FILE_NAME_OR_PATH);
+        $this->expectExceptionMessage('resources/not-exists.xlsx');
+        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/not-exists.xlsx');
+    }
+
+    /**
+     * @test extractColumns
+     */
+    public function testExtractColumns()
+    {
+        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
+        $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+
+        $data = $reader->extractColumns(
+            array(
+                'column_2' => 'value_1',
+                'column_3' => 'value_2',
+                'column_1' => 'value_3'
+            ),
+            array(
+                'value_1', 'value_2'
+            ),
+            true
+        );
+
+        $this->assertTrue($data->isValueEqualTo('2.value_1', 'Test string'));
+        $this->assertTrue($data->isValueEqualTo('2.value_2', 369));
+        $this->assertTrue($data->isValueEqualTo('2.value_3', 123));
     }
 }
