@@ -127,7 +127,7 @@ class CNabuSpreadsheetReader extends CNabuObject
 
         $datasheet = $this->spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
-        if (is_array($datasheet) && ($l = count($datasheet)) > 0) {
+        if (is_array($datasheet) && count($datasheet) > 0) {
             $translated_fields = $this->calculateColumnNameTranslations($translation_fields, $datasheet[1], $canonize);
             $this->checkMandatoryFields($translated_fields, $required_fields);
             $resultset = $this->mapData($datasheet, $translated_fields, $required_fields, 2);
