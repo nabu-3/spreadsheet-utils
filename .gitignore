@@ -13,3 +13,4 @@ etc
 var
 test.sh
 vendor
+~*.xlsx

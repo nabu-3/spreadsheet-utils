@@ -125,7 +125,7 @@ class CNabuSpreadsheetReader extends CNabuObject
             throw new ENabuSpreadsheetUtilsException(ENabuSpreadsheetUtilsException::ERROR_NONE_SPREADSHEET_LOADED);
         }
 
-        $datasheet = $this->spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+        $datasheet = $this->spreadsheet->getActiveSheet()->toArray(null, true, false, true);
 
         if (is_array($datasheet) && count($datasheet) > 0) {
             $translated_fields = $this->calculateColumnNameTranslations($translation_fields, $datasheet[1], $canonize);
