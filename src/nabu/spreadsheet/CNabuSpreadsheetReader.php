@@ -215,8 +215,8 @@ class CNabuSpreadsheetReader extends CNabuObject
                     }
                     if (count($missed_fields = array_diff(array_values($required_fields), array_keys($reg))) > 0) {
                         throw new ENabuSpreadsheetUtilsException(
-                            ENabuSpreadsheetUtilsException::ERROR_MANDATORY_COLUMNS_NOT_PRESENT,
-                            array(implode(', ', $missed_fields))
+                            ENabuSpreadsheetUtilsException::ERROR_MANDATORY_COLUMNS_NOT_PRESENT_IN_LINE,
+                            array(implode(', ', $missed_fields), $i)
                         );
                     }
                     $resultset->setValue($i, $reg);

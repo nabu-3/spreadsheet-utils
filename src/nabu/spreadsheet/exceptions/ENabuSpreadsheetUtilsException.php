@@ -40,6 +40,8 @@ class ENabuSpreadsheetUtilsException extends ENabuException
     public const ERROR_NONE_SPREADSHEET_LOADED                      = 0x0002;
     /** @var int Mandatory column(s) not present. Requires missed columns list. */
     public const ERROR_MANDATORY_COLUMNS_NOT_PRESENT                = 0x0003;
+    /** @var int Mandatory column(s) not present in line. Requires missed columns list and line number. */
+    public const ERROR_MANDATORY_COLUMNS_NOT_PRESENT_IN_LINE        = 0x0003;
 
     /** @var array English error messages array. */
     private static $error_messages = array(
@@ -48,7 +50,9 @@ class ENabuSpreadsheetUtilsException extends ENabuException
         ENabuSpreadsheetUtilsException::ERROR_NONE_SPREADSHEET_LOADED =>
             'None Spreadsheet is loaded.',
         ENabuSpreadsheetUtilsException::ERROR_MANDATORY_COLUMNS_NOT_PRESENT =>
-            'Mandatory column(s) not present in datasheet [%s].'
+            'Mandatory column(s) not present in datasheet [%s].',
+        ENabuSpreadsheetUtilsException::ERROR_MANDATORY_COLUMNS_NOT_PRESENT_IN_LINE =>
+            'Mandatory column(s) [%s] not present in line %d.'
     );
 
     /**
