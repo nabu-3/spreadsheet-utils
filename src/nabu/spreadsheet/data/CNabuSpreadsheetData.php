@@ -23,6 +23,7 @@ namespace nabu\spreadsheet\data;
 
 use nabu\data\CNabuDataObject;
 
+use nabu\data\traits\TNabuJSONData;
 use nabu\data\traits\TNabuNestedData;
 
 /**
@@ -35,4 +36,5 @@ use nabu\data\traits\TNabuNestedData;
 class CNabuSpreadsheetData extends CNabuDataObject
 {
     use TNabuNestedData;
+    use TNabuJSONData;
 }
