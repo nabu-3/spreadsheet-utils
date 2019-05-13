@@ -26,6 +26,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use nabu\min\CNabuObject;
 
 use nabu\spreadsheet\data\CNabuSpreadsheetData;
+use nabu\spreadsheet\data\CNabuSpreadsheetDataRecord;
 
 use nabu\spreadsheet\exceptions\ENabuSpreadsheetUtilsException;
 
@@ -114,12 +115,13 @@ class CNabuSpreadsheetReader extends CNabuObject
      * @param array $translation_fields Associative array to translate fields from the first line column name
      * of the datasheet to the well formed name in the result data instance.
      * @param array $required_fields Array of field names that are mandatory before extract data.
+     * @param string|null $index_field If setted, the list is indexed using values in this field.
      * @param bool $canonize If set to true, canonizes column names to remove unecessary lead paddings and special chars.
      * @return CNabuSpreadsheetData Returns an instance of @see { CNabuSpreadsheetData } with all extracted data.
      * @throws ENabuSpreadsheetUtilsException Throws an exception if something unexpected success.
      */
     public function extractColumns(
-        array $translation_fields, array $required_fields, bool $canonize = false
+        array $translation_fields, array $required_fields, ?string $index_field = null, bool $canonize = false
     ): CNabuSpreadsheetData {
         if (is_null($this->spreadsheet)) {
             throw new ENabuSpreadsheetUtilsException(ENabuSpreadsheetUtilsException::ERROR_NONE_SPREADSHEET_LOADED);
@@ -128,9 +130,12 @@ class CNabuSpreadsheetReader extends CNabuObject
         $datasheet = $this->spreadsheet->getActiveSheet()->toArray(null, true, false, true);
 
         if (is_array($datasheet) && count($datasheet) > 0) {
+            if (is_string($index_field) && !in_array($index_field, $required_fields)) {
+                $required_fields[] = $index_field;
+            }
             $translated_fields = $this->calculateColumnNameTranslations($translation_fields, $datasheet[1], $canonize);
             $this->checkMandatoryFields($translated_fields, $required_fields);
-            $resultset = $this->mapData($datasheet, $translated_fields, $required_fields, 2);
+            $resultset = $this->mapData($datasheet, $translated_fields, $required_fields, $index_field, 2);
         } else {
             $resultset = new CNabuSpreadsheetData();
         }
@@ -196,14 +201,16 @@ class CNabuSpreadsheetReader extends CNabuObject
      * @param array $datasheet Source datasheet.
      * @param array $map_fields Map columns correspondence to map data.
      * @param array $required_fields List of mandatory field names.
+     * @param string|null $index_field If setted, the list is indexed using values in this field.
      * @param int $offset Offset of first line of data to map. Default value is 1 but the Datasheet array
      * of PhpSpreasheet is option base 1.
      * @return CNabuSpreadsheetData Returns the instance of @see { CNabuSpreadsheetData } with translated data.
      * @throws ENabuSpreadsheetUtilsException Throws an exception if something fails.
      */
-    private function mapData(array $datasheet, array $map_fields, array $required_fields, int $offset = 1): CNabuSpreadsheetData
-    {
-        $resultset = new CNabuSpreadsheetData();
+    private function mapData(
+        array $datasheet, array $map_fields, array $required_fields, ?string $index_field = null, int $offset = 1
+    ): CNabuSpreadsheetData {
+        $resultset = new CNabuSpreadsheetData($index_field);
 
         if (($l = count($datasheet)) >= $offset) {
             for ($i = $offset; $i <= $l; $i++) {
@@ -219,7 +226,8 @@ class CNabuSpreadsheetReader extends CNabuObject
                             array(implode(', ', $missed_fields), $i)
                         );
                     }
-                    $resultset->setValue($i, $reg);
+                    $record = new CNabuSpreadsheetDataRecord($reg);
+                    $resultset->addItem($record);
                 }
             }
         }

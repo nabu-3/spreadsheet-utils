@@ -21,21 +21,18 @@
 
 namespace nabu\spreadsheet\data;
 
-use nabu\data\CNabuDataList;
+use nabu\data\CNabuDataObject;
 
-use nabu\data\interfaces\INabuDataReadable;
+use nabu\data\traits\TNabuJSONData;
 
 /**
  * Class to read a Spreadsheet in MS(R) Office Excel format and convert to TNabuSpreadsheetData object.
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
- * @since 0.0.1
+ * @since 0.0.2
  * @version 0.0.2
  * @package \nabu\spreadsheet\data
  */
-class CNabuSpreadsheetData extends CNabuDataList
+class CNabuSpreadsheetDataRecord extends CNabuDataObject
 {
-    protected function acquireItem($key): ?INabuDataReadable
-    {
-        return null;
-    }
+    use TNabuJSONData;
 }

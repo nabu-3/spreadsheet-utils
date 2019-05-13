@@ -68,11 +68,78 @@ class CNabuSpreadsheetReaderTest extends TestCase
             array(
                 'value_1', 'value_2'
             ),
+            null,
             true
         );
 
-        $this->assertTrue($data->isValueEqualTo('2.value_1', 'Test string'));
-        $this->assertTrue($data->isValueEqualTo('2.value_2', 369));
-        $this->assertTrue($data->isValueEqualTo('2.value_3', 123));
+        $this->assertTrue($data->getItem(0)->isValueEqualTo('value_1', 'Test string'));
+        $this->assertTrue($data->getItem(0)->isValueEqualTo('value_2', 369));
+        $this->assertTrue($data->getItem(0)->isValueEqualTo('value_3', 123));
+
+        $this->assertTrue($data->getItem(1)->isValueEqualTo('value_1', 'Other test'));
+        $this->assertTrue($data->getItem(1)->isValueEqualTo('value_2', 258));
+        $this->assertTrue($data->getItem(1)->isValueEqualTo('value_3', 456));
+
+        $this->assertTrue($data->getItem(2)->isValueEqualTo('value_1', 'More tests data'));
+        $this->assertTrue($data->getItem(2)->isValueEqualTo('value_2', 147));
+        $this->assertTrue($data->getItem(2)->isValueEqualTo('value_3', 789));
+    }
+
+    /**
+     * @test extractColumns
+     */
+    public function testExtractIndexedColumns()
+    {
+        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
+        $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+
+        $data = $reader->extractColumns(
+            array(
+                'column_2' => 'value_1',
+                'column_3' => 'value_2',
+                'column_1' => 'value_3'
+            ),
+            array(
+                'value_1', 'value_2'
+            ),
+            'value_2',
+            true
+        );
+
+        $this->assertTrue($data->getItem(369)->isValueEqualTo('value_1', 'Test string'));
+        $this->assertTrue($data->getItem(369)->isValueEqualTo('value_2', 369));
+        $this->assertTrue($data->getItem(369)->isValueEqualTo('value_3', 123));
+        $this->assertSame(
+            array(
+                'value_1' => 'Test string',
+                'value_2' => 369.0,
+                'value_3' => 123.0
+            ),
+            $data->getItem(369)->getValuesAsArray()
+        );
+
+        $this->assertTrue($data->getItem(258)->isValueEqualTo('value_1', 'Other test'));
+        $this->assertTrue($data->getItem(258)->isValueEqualTo('value_2', 258));
+        $this->assertTrue($data->getItem(258)->isValueEqualTo('value_3', 456));
+        $this->assertSame(
+            array(
+                'value_1' => 'Other test',
+                'value_2' => 258.0,
+                'value_3' => 456.0
+            ),
+            $data->getItem(258)->getValuesAsArray()
+        );
+
+        $this->assertTrue($data->getItem(147)->isValueEqualTo('value_1', 'More tests data'));
+        $this->assertTrue($data->getItem(147)->isValueEqualTo('value_2', 147));
+        $this->assertTrue($data->getItem(147)->isValueEqualTo('value_3', 789));
+        $this->assertSame(
+            array(
+                'value_1' => 'More tests data',
+                'value_2' => 147.0,
+                'value_3' => 789.0
+            ),
+            $data->getItem(147)->getValuesAsArray()
+        );
     }
 }
