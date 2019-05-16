@@ -38,4 +38,9 @@ class CNabuSpreadsheetData extends CNabuDataList
     {
         return null;
     }
+
+    protected function createDataInstance(array $data): ?INabuDataReadable
+    {
+        throw new \LogicException('Not implemented');
+    }
 }
