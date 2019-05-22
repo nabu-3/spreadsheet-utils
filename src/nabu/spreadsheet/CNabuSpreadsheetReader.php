@@ -137,10 +137,20 @@ class CNabuSpreadsheetReader extends CNabuObject
             $this->checkMandatoryFields($translated_fields, $required_fields);
             $resultset = $this->mapData($datasheet, $translated_fields, $required_fields, $index_field, 2);
         } else {
-            $resultset = new CNabuSpreadsheetData($index_field);
+            $resultset = $this->createDataInstance();
         }
 
         return $resultset;
+    }
+
+    /**
+     * This method is called internally to create the CNabuSpreadsheetData instance. You can override it to return
+     * a subclass of @see { CNabuSpreasheetData } class.
+     * @return CNabuSpreadsheetData Returns the new instance.
+     */
+    protected function createDataInstance(): CNabuSpreadsheetData
+    {
+        return new CNabuSpreadsheetData();
     }
 
     /**
