@@ -137,7 +137,7 @@ class CNabuSpreadsheetReader extends CNabuObject
             $this->checkMandatoryFields($translated_fields, $required_fields);
             $resultset = $this->mapData($datasheet, $translated_fields, $required_fields, $index_field, 2);
         } else {
-            $resultset = new CNabuSpreadsheetData();
+            $resultset = new CNabuSpreadsheetData($index_field);
         }
 
         return $resultset;
@@ -227,7 +227,11 @@ class CNabuSpreadsheetReader extends CNabuObject
                         );
                     }
                     $record = new CNabuSpreadsheetDataRecord($reg);
-                    $resultset->addItem($record);
+                    if (is_null($index_field)) {
+                        $resultset->addItem($record, $i - $offset);
+                    } else {
+                        $resultset->addItem($record);
+                    }
                 }
             }
         }
