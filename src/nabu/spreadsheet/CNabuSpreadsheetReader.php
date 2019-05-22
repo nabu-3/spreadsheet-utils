@@ -146,20 +146,12 @@ class CNabuSpreadsheetReader extends CNabuObject
     /**
      * This method is called internally to create the CNabuSpreadsheetData instance. You can override it to return
      * a subclass of @see { CNabuSpreasheetData } class.
-<<<<<<< HEAD
      * @param string|null $index_field Index field to index data collection.
      * @return CNabuSpreadsheetData Returns the new instance.
      */
     protected function createDataInstance(?string $index_field = null): CNabuSpreadsheetData
     {
         return new CNabuSpreadsheetData($index_field);
-=======
-     * @return CNabuSpreadsheetData Returns the new instance.
-     */
-    protected function createDataInstance(): CNabuSpreadsheetData
-    {
-        return new CNabuSpreadsheetData();
->>>>>>> 9774a409b56209e2c6461fe3a944dd077d8a79a4
     }
 
     /**
