@@ -21,9 +21,7 @@
 
 namespace nabu\spreadsheet\data;
 
-use nabu\data\CNabuDataObject;
-
-use nabu\data\traits\TNabuJSONData;
+use nabu\data\CNabuAbstractDataObject;
 
 /**
  * Class to read a Spreadsheet in MS(R) Office Excel format and convert to TNabuSpreadsheetData object.
@@ -32,7 +30,7 @@ use nabu\data\traits\TNabuJSONData;
  * @version 0.0.2
  * @package \nabu\spreadsheet\data
  */
-class CNabuSpreadsheetDataRecord extends CNabuDataObject
+class CNabuSpreadsheetDataRecord extends CNabuAbstractDataObject
 {
-    use TNabuJSONData;
+
 }

@@ -23,10 +23,11 @@ namespace nabu\spreadsheet;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+use nabu\data\interfaces\INabuDataList;
+
 use nabu\infrastructure\reader\CNabuAbstractDataListFileReader;
 
 use nabu\spreadsheet\data\CNabuSpreadsheetData;
-use nabu\spreadsheet\data\CNabuSpreadsheetDataRecord;
 
 use nabu\spreadsheet\exceptions\ENabuSpreadsheetUtilsException;
 
@@ -41,12 +42,18 @@ use PhpOffice\PhpSpreadsheet;
  */
 class CNabuSpreadsheetReader extends CNabuAbstractDataListFileReader
 {
+    /** @var string|null Index field name. */
+    protected $index_field = null;
+
     /** @var PhpSpreadsheet|null $spreadsheet Native spreadsheet instance. */
     private $spreadsheet = null;
 
     protected function getValidMIMETypes(): array
     {
-        throw new \LogicException('Not implemented'); // TODO
+        return [
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
     }
 
     protected function customFileValidation(string $filename): bool
@@ -56,10 +63,50 @@ class CNabuSpreadsheetReader extends CNabuAbstractDataListFileReader
 
     protected function openSourceFile(string $filename): bool
     {
-        $this->spreadsheet = IOFactory::load($this->filename);
+        $this->spreadsheet = IOFactory::load($filename);
         $this->setActiveSheetIndex(0);
 
         return true;
+    }
+
+    protected function createDataListInstance(): INabuDataList
+    {
+        return new CNabuSpreadsheetData($this->index_field);
+    }
+
+    protected function getSourceDataAsArray(): ?array
+    {
+        return $this->spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+    }
+
+    protected function checkBeforeParse(): bool
+    {
+        if (is_null($this->spreadsheet)) {
+            throw new ENabuSpreadsheetUtilsException(ENabuSpreadsheetUtilsException::ERROR_NONE_SPREADSHEET_LOADED);
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the Index Field used to index data in the result collection.
+     * @return string|null Returns the index name if set or null otherwise.
+     */
+    public function getIndexField(): ?string
+    {
+        return $this->index_field;
+    }
+
+    /**
+     * Set the Index Field used to index data in the result collection.
+     * @param string|null $index The index field name in the result to use.
+     * @return CNabuSpreadsheetReader Returns the self pointer to grant Fluent Interface.
+     */
+    public function setIndexField(?string $index = null): CNabuSpreadsheetReader
+    {
+        $this->index_field = $index;
+
+        return $this;
     }
 
     /**
@@ -77,51 +124,6 @@ class CNabuSpreadsheetReader extends CNabuAbstractDataListFileReader
         $this->spreadsheet->setActiveSheetIndex($index);
 
         return $this;
-    }
-
-    /**
-     * Read data as a massive process that generates a @see { CNabuSpreadsheetData } instance with available data.
-     * This process discards not required columns in the datasheet and renames first line to well formed field names.
-     * @param array $translation_fields Associative array to translate fields from the first line column name
-     * of the datasheet to the well formed name in the result data instance.
-     * @param array $required_fields Array of field names that are mandatory before extract data.
-     * @param string|null $index_field If setted, the list is indexed using values in this field.
-     * @param bool $canonize If set to true, canonizes column names to remove unecessary lead paddings and special chars.
-     * @return CNabuSpreadsheetData Returns an instance of @see { CNabuSpreadsheetData } with all extracted data.
-     * @throws ENabuSpreadsheetUtilsException Throws an exception if something unexpected success.
-     */
-    public function extractColumns(
-        array $translation_fields, array $required_fields, ?string $index_field = null, bool $canonize = false
-    ): CNabuSpreadsheetData {
-        if (is_null($this->spreadsheet)) {
-            throw new ENabuSpreadsheetUtilsException(ENabuSpreadsheetUtilsException::ERROR_NONE_SPREADSHEET_LOADED);
-        }
-
-        $datasheet = $this->spreadsheet->getActiveSheet()->toArray(null, true, false, true);
-
-        if (is_array($datasheet) && count($datasheet) > 0) {
-            if (is_string($index_field) && !in_array($index_field, $required_fields)) {
-                $required_fields[] = $index_field;
-            }
-            $translated_fields = $this->calculateColumnNameTranslations($translation_fields, $datasheet[1], $canonize);
-            $this->checkMandatoryFields($translated_fields, $required_fields);
-            $resultset = $this->mapData($datasheet, $translated_fields, $required_fields, $index_field, 2);
-        } else {
-            $resultset = $this->createDataInstance();
-        }
-
-        return $resultset;
-    }
-
-    /**
-     * This method is called internally to create the CNabuSpreadsheetData instance. You can override it to return
-     * a subclass of @see { CNabuSpreasheetData } class.
-     * @param string|null $index_field Index field to index data collection.
-     * @return CNabuSpreadsheetData Returns the new instance.
-     */
-    protected function createDataInstance(?string $index_field = null): CNabuSpreadsheetData
-    {
-        return new CNabuSpreadsheetData($index_field);
     }
 
 

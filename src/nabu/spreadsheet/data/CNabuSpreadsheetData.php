@@ -21,7 +21,7 @@
 
 namespace nabu\spreadsheet\data;
 
-use nabu\data\CNabuDataList;
+use nabu\data\CNabuAbstractDataList;
 
 use nabu\data\interfaces\INabuDataReadable;
 
@@ -32,7 +32,7 @@ use nabu\data\interfaces\INabuDataReadable;
  * @version 0.0.2
  * @package \nabu\spreadsheet\data
  */
-class CNabuSpreadsheetData extends CNabuDataList
+class CNabuSpreadsheetData extends CNabuAbstractDataList
 {
     protected function acquireItem($key): ?INabuDataReadable
     {
@@ -41,6 +41,6 @@ class CNabuSpreadsheetData extends CNabuDataList
 
     protected function createDataInstance(array $data): ?INabuDataReadable
     {
-        throw new \LogicException('Not implemented');
+        return new CNabuSpreadsheetDataRecord($data);
     }
 }

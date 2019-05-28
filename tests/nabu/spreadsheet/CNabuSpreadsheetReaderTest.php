@@ -21,9 +21,9 @@
 
 namespace nabu\spreadsheet;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Error\Error;
 
-use nabu\spreadsheet\exceptions\ENabuSpreadsheetUtilsException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for class @see { TNabuSpreadsheetData }.
@@ -45,21 +45,18 @@ class CNabuSpreadsheetReaderTest extends TestCase
         $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
         $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
 
-        $this->expectException(ENabuSpreadsheetUtilsException::class);
-        $this->expectExceptionCode(ENabuSpreadsheetUtilsException::ERROR_INVALID_FILE_NAME_OR_PATH);
+        $this->expectException(Error::class);
         $this->expectExceptionMessage('resources/not-exists.xlsx');
         $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/not-exists.xlsx');
     }
 
     /**
-     * @test extractColumns
+     * @test parse
      */
     public function testExtractColumns()
     {
-        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
-        $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
-
-        $data = $reader->extractColumns(
+        $reader = new CNabuSpreadsheetReader(
+            __DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx',
             array(
                 'column_2' => 'value_1',
                 'column_3' => 'value_2',
@@ -68,9 +65,11 @@ class CNabuSpreadsheetReaderTest extends TestCase
             array(
                 'value_1', 'value_2'
             ),
-            null,
-            true
+            false, 1, 2
         );
+        $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+
+        $data = $reader->parse();
 
         $this->assertTrue($data->getItem(0)->isValueEqualTo('value_1', 'Test string'));
         $this->assertTrue($data->getItem(0)->isValueEqualTo('value_2', 369));
@@ -93,18 +92,22 @@ class CNabuSpreadsheetReaderTest extends TestCase
         $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
         $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
 
-        $data = $reader->extractColumns(
-            array(
-                'column_2' => 'value_1',
-                'column_3' => 'value_2',
-                'column_1' => 'value_3'
-            ),
-            array(
-                'value_1', 'value_2'
-            ),
-            'value_2',
-            true
-        );
+        $reader->setConvertFieldsMatrix(array(
+            'column_2' => 'value_1',
+            'column_3' => 'value_2',
+            'column_1' => 'value_3'
+        ));
+
+        $reader->setRequiredFields(array(
+            'value_1', 'value_2'
+        ));
+
+        $reader->setUseStrictSourceNames(false);
+        $reader->setHeaderNamesOffset(1);
+        $reader->setFirstRowOffset(2);
+        $reader->setIndexField('value_2');
+
+        $data = $reader->parse();
 
         $this->assertTrue($data->getItem(369)->isValueEqualTo('value_1', 'Test string'));
         $this->assertTrue($data->getItem(369)->isValueEqualTo('value_2', 369));
