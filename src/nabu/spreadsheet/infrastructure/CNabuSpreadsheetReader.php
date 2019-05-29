@@ -69,6 +69,11 @@ class CNabuSpreadsheetReader extends CNabuAbstractDataListFileReader
         return true;
     }
 
+    protected function closeSourceFile(): void
+    {
+
+    }
+
     protected function createDataListInstance(): INabuDataList
     {
         return new CNabuSpreadsheetData($this->index_field);
@@ -85,6 +90,11 @@ class CNabuSpreadsheetReader extends CNabuAbstractDataListFileReader
             throw new ENabuSpreadsheetUtilsException(ENabuSpreadsheetUtilsException::ERROR_NONE_SPREADSHEET_LOADED);
         }
 
+        return true;
+    }
+
+    protected function checkAfterParse(\nabu\data\interfaces\INabuDataList $resultset): bool
+    {
         return true;
     }
 
