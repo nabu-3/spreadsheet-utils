@@ -26,7 +26,7 @@ use nabu\data\CNabuAbstractDataList;
 use nabu\data\interfaces\INabuDataReadable;
 
 /**
- * Class to read a Spreadsheet in MS(R) Office Excel format and convert to TNabuSpreadsheetData object.
+ * Class to store Spreadsheet data.
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @since 0.0.1
  * @version 0.0.2

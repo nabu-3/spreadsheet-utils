@@ -19,7 +19,7 @@
  *  limitations under the License.
  */
 
-namespace nabu\spreadsheet;
+namespace nabu\spreadsheet\infrastructure;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -38,7 +38,7 @@ use PhpOffice\PhpSpreadsheet;
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @since 0.0.1
  * @version 0.0.2
- * @package \nabu\spreadsheet
+ * @package \nabu\spreadsheet\infrastructure
  */
 class CNabuSpreadsheetReader extends CNabuAbstractDataListFileReader
 {

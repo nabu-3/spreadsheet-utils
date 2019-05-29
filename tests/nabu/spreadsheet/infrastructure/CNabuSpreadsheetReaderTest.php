@@ -19,11 +19,14 @@
  *  limitations under the License.
  */
 
-namespace nabu\spreadsheet;
+namespace nabu\spreadsheet\infrastructure;
 
 use PHPUnit\Framework\Error\Error;
 
 use PHPUnit\Framework\TestCase;
+
+use nabu\infrastructure\reader\interfaces\INabuDataListReader;
+use nabu\infrastructure\reader\interfaces\INabuDataListFileReader;
 
 /**
  * Tests for class @see { TNabuSpreadsheetData }.
@@ -41,19 +44,23 @@ class CNabuSpreadsheetReaderTest extends TestCase
     {
         $reader = new CNabuSpreadsheetReader();
         $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+        $this->assertInstanceOf(INabuDataListReader::class, $reader);
+        $this->assertInstanceOf(INabuDataListFileReader::class, $reader);
 
-        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
+        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'basic-excel-file.xlsx');
         $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
+        $this->assertInstanceOf(INabuDataListReader::class, $reader);
+        $this->assertInstanceOf(INabuDataListFileReader::class, $reader);
 
         $this->expectException(Error::class);
         $this->expectExceptionMessage('resources/not-exists.xlsx');
-        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/not-exists.xlsx');
+        $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'not-exists.xlsx');
     }
 
     /**
      * @test parse
      */
-    public function testExtractColumns()
+    public function testParse()
     {
         $reader = new CNabuSpreadsheetReader(
             __DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx',
