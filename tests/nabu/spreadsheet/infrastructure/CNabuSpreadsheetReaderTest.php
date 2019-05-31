@@ -28,6 +28,8 @@ use PHPUnit\Framework\TestCase;
 use nabu\infrastructure\reader\interfaces\INabuDataListReader;
 use nabu\infrastructure\reader\interfaces\INabuDataListFileReader;
 
+use nabu\spreadsheet\exceptions\ENabuSpreadsheetUtilsException;
+
 /**
  * Tests for class @see { TNabuSpreadsheetData }.
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
@@ -60,7 +62,7 @@ class CNabuSpreadsheetReaderTest extends TestCase
     /**
      * @test parse
      */
-    public function testParse()
+    public function testParseOrdinalArray()
     {
         $reader = new CNabuSpreadsheetReader(
             __DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx',
@@ -94,7 +96,7 @@ class CNabuSpreadsheetReaderTest extends TestCase
     /**
      * @test extractColumns
      */
-    public function testExtractIndexedColumns()
+    public function testParseIndexedArray()
     {
         $reader = new CNabuSpreadsheetReader(__DIR__ . DIRECTORY_SEPARATOR . 'resources/basic-excel-file.xlsx');
         $this->assertInstanceOf(CNabuSpreadsheetReader::class, $reader);
@@ -113,6 +115,7 @@ class CNabuSpreadsheetReaderTest extends TestCase
         $reader->setHeaderNamesOffset(1);
         $reader->setFirstRowOffset(2);
         $reader->setIndexField('value_2');
+        $this->assertSame('value_2', $reader->getIndexField());
 
         $data = $reader->parse();
 
@@ -151,5 +154,33 @@ class CNabuSpreadsheetReaderTest extends TestCase
             ),
             $data->getItem(147)->getValuesAsArray()
         );
+
+        $this->assertNull($data->getItem('another'));
+    }
+
+    /**
+     * @test checkBeforeParse
+     */
+    public function testCheckBeforeParseFails()
+    {
+        $reader = new CNabuSpreadsheetReader();
+
+        $this->expectException(ENabuSpreadsheetUtilsException::class);
+        $this->expectExceptionCode(ENabuSpreadsheetUtilsException::ERROR_NONE_SPREADSHEET_LOADED);
+
+        $reader->parse();
+    }
+
+    /**
+     * @test setActiveSheetIndex
+     */
+    public function testSetActiveSheetIndexFails()
+    {
+        $reader = new CNabuSpreadsheetReader();
+
+        $this->expectException(ENabuSpreadsheetUtilsException::class);
+        $this->expectExceptionCode(ENabuSpreadsheetUtilsException::ERROR_NONE_SPREADSHEET_LOADED);
+
+        $reader->setActiveSheetIndex(1);
     }
 }
