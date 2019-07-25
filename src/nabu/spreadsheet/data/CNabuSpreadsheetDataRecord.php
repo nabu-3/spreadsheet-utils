@@ -21,26 +21,16 @@
 
 namespace nabu\spreadsheet\data;
 
-use nabu\data\CNabuAbstractDataList;
-
-use nabu\data\interfaces\INabuDataReadable;
+use nabu\data\CNabuAbstractDataObject;
 
 /**
- * Class to store Spreadsheet data.
+ * Class to store a Spreadsheet line.
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
- * @since 0.0.1
+ * @since 0.0.2
  * @version 0.0.2
  * @package \nabu\spreadsheet\data
  */
-class CNabuSpreadsheetData extends CNabuAbstractDataList
+class CNabuSpreadsheetDataRecord extends CNabuAbstractDataObject
 {
-    protected function acquireItem($key): ?INabuDataReadable
-    {
-        return null;
-    }
 
-    protected function createDataInstance(array $data): ?INabuDataReadable
-    {
-        return new CNabuSpreadsheetDataRecord($data);
-    }
 }
